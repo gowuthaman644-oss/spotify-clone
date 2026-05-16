@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Clone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Circular+Std:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <canvas id="particles-bg"></canvas>
+    
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <i class="fab fa-spotify"></i>
+        <h1>Spotify Premium</h1>
+        <div class="loader"></div>
+    </div>
+
+    <!-- Authentication Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-box glassmorphism" id="auth-box">
+            <i class="fab fa-spotify" style="font-size: 48px; color: var(--accent); margin-bottom: 16px;"></i>
+            <h2 id="auth-title">Log in to Spotify</h2>
+            
+            <form id="auth-form" style="width: 100%;">
+                <div id="signup-fields" style="display: none;">
+                    <input type="email" id="auth-email" placeholder="Email address" required>
+                </div>
+                <input type="text" id="auth-username" placeholder="Username" required>
+                <input type="password" id="auth-password" placeholder="Password" required>
+                
+                <div class="remember-me" id="remember-container">
+                    <input type="checkbox" id="remember-me" checked>
+                    <label for="remember-me">Remember me</label>
+                </div>
+                
+                <button type="submit" id="auth-btn">Log In</button>
+            </form>
+            
+            <p class="auth-toggle" id="auth-toggle">Don't have an account? <span>Sign up</span></p>
+        </div>
+    </div>
+
+    <div class="app-container" id="main-app" style="opacity: 0; pointer-events: none;">
+        
+        <!-- Global Topbar -->
+        <header class="global-topbar">
+            <div class="topbar-left">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <div class="topbar-center">
+                <div class="nav-btn"><i class="fas fa-home"></i></div>
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="What do you want to play?">
+                </div>
+            </div>
+            <div class="topbar-right">
+                <i class="far fa-bell" title="Notifications"></i>
+                <div class="profile-icon" id="profile-icon" style="cursor: pointer;"><i class="far fa-user"></i></div>
+                
+                <!-- Profile Dropdown -->
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <div class="dropdown-item" id="user-info-display"><i class="far fa-user"></i> <span id="display-username">User</span></div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item"><i class="fas fa-external-link-alt"></i> Account</div>
+                    <div class="dropdown-item"><i class="fas fa-cog"></i> Settings</div>
+                    <div class="dropdown-item" id="theme-panel-btn"><i class="fas fa-palette"></i> Theme</div>
+                    <div class="dropdown-item" id="theme-toggle"><i class="fas fa-sun"></i> Dark/Light</div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Log out</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <!-- Left Sidebar: Your Library -->
+            <aside class="left-sidebar panel">
+                <div class="library-header">
+                    <div class="library-title">
+                        <i class="fas fa-book-open"></i>
+                        <span>Your Library</span>
+                    </div>
+                    <div class="library-actions">
+                        <i class="fas fa-plus"></i>
+                        <i class="fas fa-arrow-right"></i>
+                    </div>
+                </div>
+                
+                <div class="library-chips">
+                    <span class="chip">Playlists</span>
+                    <span class="chip">Podcasts</span>
+                    <span class="chip">Albums</span>
+                    <span class="chip">Artists</span>
+                </div>
+                
+                <div class="library-search-row">
+                    <i class="fas fa-search"></i>
+                    <span>Recents <i class="fas fa-list"></i></span>
+                </div>
+                
+                <div class="library-list" id="library-list">
+                    <!-- Populated by JS -->
+                    <div class="lib-item">
+                        <div class="lib-img-container"><i class="fas fa-heart"></i></div>
+                        <div class="lib-info">
+                            <h4>Liked Songs</h4>
+                            <p><i class="fas fa-thumbtack" style="color:var(--accent);"></i> Playlist • User</p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Content -->
+            <main class="center-content panel">
+                <div class="content-scrollable" id="main-scroll">
+                    
+                    <div class="greeting-section">
+                        <h1 id="greeting-text" style="margin-bottom: 24px;">Good Evening</h1>
+                    </div>
+
+                    <div class="hero-banner">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&q=80" alt="Hero">
+                        <div class="hero-info">
+                            <span class="hero-badge">Featured Playlist</span>
+                            <h1 class="hero-title">Your Daily Mix</h1>
+                            <p>Chill electronic vibes for tonight</p>
+                            <div class="hero-actions">
+                                <button class="hero-play-btn"><i class="fas fa-play"></i> Play</button>
+                                <button class="hero-save-btn"><i class="far fa-heart"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-chips">
+                        <span class="chip active">All</span>
+                        <span class="chip">Music</span>
+                        <span class="chip">Podcasts</span>
+                    </div>
+
+                    <div class="recent-grid-2col" id="recent-grid">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <section class="playlist-section">
+                        <div class="section-header">
+                            <h2>Made For You</h2>
+                            <span class="show-all">Show all</span>
+                        </div>
+                        <div class="carousel-container" id="songs-container">
+                            <!-- Populated by JS -->
+                        </div>
+                    </section>
+
+                    <section class="playlist-section">
+                        <div class="section-header">
+                            <h2>Your top mixes</h2>
+                            <span class="show-all">Show all</span>
+                        </div>
+                        <div class="carousel-container" id="trending-container">
+                            <!-- Populated by JS -->
+                        </div>
+                    </section>
+                </div>
+            </main>
+
+            <!-- Right Panel: Now Playing -->
+            <aside class="right-panel panel">
+                <div class="right-header">
+                    <h3 id="right-panel-title">Now Playing</h3>
+                    <div class="right-header-actions">
+                        <i class="fas fa-ellipsis-h"></i>
+                        <i class="fas fa-times"></i>
+                    </div>
+                </div>
+                <div class="right-content-scrollable">
+                    <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&q=80" id="right-cover" class="right-large-cover" alt="Cover">
+                    <div class="right-song-info">
+                        <div class="right-title-row">
+                            <div>
+                                <h2 id="right-title">Select a song</h2>
+                                <p id="right-artist">-</p>
+                            </div>
+                            <i class="far fa-heart like-btn" id="like-btn"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="about-artist-card">
+                        <div class="about-header">About the artist</div>
+                        <div class="about-content">
+                            <h4 id="about-artist-name">Artist</h4>
+                            <p>1,234,567 monthly listeners</p>
+                            <button class="follow-btn">Follow</button>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Playbar -->
+        <footer class="playbar">
+            <div class="now-playing" id="now-playing">
+                <img src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=150&q=80" alt="Cover" id="current-cover">
+                <div class="track-info" style="display:flex; align-items:center;">
+                    <div>
+                        <div class="track-name" id="current-title">Select a song</div>
+                        <div class="track-artist" id="current-artist">-</div>
+                    </div>
+                    <div class="wave" id="music-wave">
+                        <span></span><span></span><span></span><span></span>
+                    </div>
+                </div>
+                <i class="fas fa-check" style="color: var(--accent); font-size: 14px; margin-left: 12px;"></i>
+            </div>
+
+            <div class="player-controls">
+                <div class="control-buttons">
+                    <button id="shuffle"><i class="fas fa-random"></i></button>
+                    <button id="prev"><i class="fas fa-step-backward"></i></button>
+                    <button class="play-pause" id="play-pause"><i class="fas fa-play"></i></button>
+                    <button id="next"><i class="fas fa-step-forward"></i></button>
+                    <button id="repeat"><i class="fas fa-redo-alt"></i></button>
+                </div>
+                <div class="playback-bar">
+                    <span id="current-time">0:00</span>
+                    <div class="progress-container" id="progress-container">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <span id="total-time">0:00</span>
+                </div>
+            </div>
+
+            <div class="volume-controls">
+                <canvas id="audio-visualizer" width="80" height="30" style="margin-right:16px; opacity:0; transition:opacity 0.3s;"></canvas>
+                <i class="fas fa-microphone" id="lyrics-btn" title="Lyrics"></i>
+                <i class="fas fa-list" id="queue-btn" title="Queue"></i>
+                <i class="fas fa-laptop-house"></i>
+                <i class="fas fa-volume-up" id="mute-btn" title="Mute"></i>
+                <div class="volume-container" id="volume-container">
+                    <div class="volume-bar" id="volume-bar"></div>
+                </div>
+                <i class="fas fa-expand-alt" id="mini-player-btn" title="Fullscreen"></i>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Lyrics Modal -->
+    <div id="lyrics-modal" class="modal">
+        <div class="modal-content glassmorphism">
+            <span id="close-lyrics" class="close-modal">&times;</span>
+            <h2 id="lyrics-title">Lyrics</h2>
+            <div id="lyrics-text" class="lyrics-text smooth-scroll"></div>
+        </div>
+    </div>
+
+    <!-- Theme Customization Modal -->
+    <div id="theme-modal" class="modal">
+        <div class="modal-content glassmorphism" style="max-width: 400px; text-align: center;">
+            <span id="close-theme" class="close-modal">&times;</span>
+            <h2>Choose Accent Color</h2>
+            <div class="theme-colors" style="display: flex; justify-content: center; gap: 16px; margin-top: 24px;">
+                <div class="color-swatch" data-color="#1db954" style="background: #1db954;"></div>
+                <div class="color-swatch" data-color="#1d4ed8" style="background: #1d4ed8;"></div>
+                <div class="color-swatch" data-color="#e11d48" style="background: #e11d48;"></div>
+                <div class="color-swatch" data-color="#f59e0b" style="background: #f59e0b;"></div>
+                <div class="color-swatch" data-color="#8b5cf6" style="background: #8b5cf6;"></div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio-element" crossorigin="anonymous"></audio>
+    <!-- Fullscreen Player Modal -->
+    <div id="fullscreen-player" class="fullscreen-player">
+        <div class="fs-bg" id="fs-bg"></div>
+        <div class="fs-header">
+            <i class="fas fa-chevron-down" id="fs-close" style="cursor:pointer; font-size: 24px;"></i>
+            <div class="fs-header-text">PLAYING FROM PLAYLIST<br><b>Your Daily Mix</b></div>
+            <i class="fas fa-ellipsis-h" style="font-size: 24px;"></i>
+        </div>
+        <div class="fs-content">
+            <div class="fs-artwork-container">
+                <img src="" id="fs-cover" class="fs-cover animated-disc" alt="Cover">
+            </div>
+            <div class="fs-info">
+                <h1 id="fs-title">Title</h1>
+                <h2 id="fs-artist" style="color: #b3b3b3;">Artist</h2>
+            </div>
+            <div class="fs-controls">
+                <!-- Additional immersive controls could go here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=2"></script>
+</body>
+</html>
